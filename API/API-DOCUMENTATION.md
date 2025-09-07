@@ -132,9 +132,9 @@ curl -X POST http://localhost:3002/auth/logout \
 
 ---
 
-## 🧪 Comandos para Pruebas de Validación
+##  Comandos para Pruebas de Validación
 
-### ❌ Registro sin email
+###  Registro sin email
 ```bash
 curl -X POST http://localhost:3002/auth/register \
   -H "Content-Type: application/json" \
@@ -144,7 +144,7 @@ curl -X POST http://localhost:3002/auth/register \
   }'
 ```
 
-### ❌ Registro sin fullName
+###  Registro sin fullName
 ```bash
 curl -X POST http://localhost:3002/auth/register \
   -H "Content-Type: application/json" \
@@ -154,7 +154,7 @@ curl -X POST http://localhost:3002/auth/register \
   }'
 ```
 
-### ❌ Login sin password
+###  Login sin password
 ```bash
 curl -X POST http://localhost:3002/auth/login \
   -H "Content-Type: application/json" \
@@ -163,20 +163,20 @@ curl -X POST http://localhost:3002/auth/login \
   }'
 ```
 
-### ❌ Profile sin token
+###  Profile sin token
 ```bash
 curl -X GET http://localhost:3002/auth/profile \
   -H "Content-Type: application/json"
 ```
 
-### ❌ Endpoint inexistente
+###  Endpoint inexistente
 ```bash
 curl -X GET http://localhost:3002/endpoint-inexistente
 ```
 
 ---
 
-## 📊 Códigos de Estado HTTP
+##  Códigos de Estado HTTP
 
 | Código | Descripción |
 |--------|-------------|
@@ -191,7 +191,7 @@ curl -X GET http://localhost:3002/endpoint-inexistente
 
 ---
 
-## 🔧 Configuración de Headers
+##  Configuración de Headers
 
 ### Para todos los endpoints:
 ```
@@ -206,7 +206,7 @@ Authorization: Bearer {tu_access_token}
 
 ---
 
-## 🎯 Flujo de Autenticación Recomendado
+##  Flujo de Autenticación Recomendado
 
 ### 1. **Registro/Login**
 ```bash
@@ -252,38 +252,6 @@ curl -X POST http://localhost:3002/auth/logout \
 
 ---
 
-## ⚙️ Configuración para Desarrolladores
-
-### Variables de Entorno (.env)
-```env
-# Database
-DATABASE_URL="postgresql://postgres.brifneasqkqmjaejldwn:PASSWORD@aws-1-us-east-1.pooler.supabase.com:5432/postgres"
-
-# JWT Configuration
-JWT_SECRET="QBlock-Auth-JWT-Secret-2025-SuperSecure!"
-JWT_REFRESH_SECRET="QBlock-Refresh-Token-Secret-2025-UltraSecure!"
-JWT_EXPIRES_IN="15m"
-JWT_REFRESH_EXPIRES_IN="7d"
-
-# Server
-PORT=3002
-NODE_ENV=development
-CORS_ORIGIN="http://localhost:3000"
-```
-
-### Base de Datos (Supabase SQL)
-```sql
-CREATE TABLE app_users (
-  id BIGINT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
-  email VARCHAR(255) UNIQUE NOT NULL,
-  password VARCHAR(255) NOT NULL,
-  full_name VARCHAR(255) NOT NULL,
-  role VARCHAR(50) DEFAULT 'user',
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
-
-CREATE INDEX idx_app_users_email ON app_users(email);
-```
 
 ### Comandos de instalación
 ```bash
@@ -302,7 +270,7 @@ pnpm build && pnpm start
 
 ---
 
-## 🛡️ Notas de Seguridad
+## Notas de Seguridad
 
 1. **Tokens JWT:**
    - Access Token: 15 minutos de duración
@@ -323,7 +291,7 @@ pnpm build && pnpm start
 
 ---
 
-## 🐛 Troubleshooting
+##  Troubleshooting
 
 ### Error: "socket hang up"
 - Verifica que la base de datos esté activa
@@ -341,14 +309,3 @@ pnpm build && pnpm start
 - Ejecuta `pnpm install` para instalar dependencias
 - Verifica que estés en el directorio correcto
 
----
-
-## 📞 Soporte
-
-Para dudas o problemas:
-1. Verifica que el servidor esté corriendo en puerto 3002
-2. Confirma que todos los headers estén configurados correctamente
-3. Revisa los códigos de estado HTTP para identificar el problema
-4. Usa los comandos de validación para probar casos de error
-
-**Estado actual:** ✅ 100% Funcional y probado
