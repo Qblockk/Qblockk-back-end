@@ -11,12 +11,13 @@ export class AuthController {
   // POST /auth/register
   static async register(req: Request, res: Response): Promise<void> {
     try {
-      const { email, password, firstName, lastName, fullName } = req.body as {
+      const { email, password, firstName, lastName, fullName, phone } = req.body as {
         email?: string;
         password?: string;
         firstName?: string;
         lastName?: string;
         fullName?: string;
+        phone?: string;
       };
 
       // Validaciones básicas
@@ -51,6 +52,7 @@ export class AuthController {
           email,
           password: hashedPassword,
           full_name: fullName || `${firstName || ''} ${lastName || ''}`.trim() || 'Usuario',
+          phone: phone || null,
         }
       });
 
@@ -75,6 +77,7 @@ export class AuthController {
             id: user.id.toString(),
             email: user.email,
             full_name: user.full_name,
+            phone: user.phone,
             role: user.role
           },
           tokens: {
@@ -142,6 +145,12 @@ export class AuthController {
         return;
       }
 
+      // Actualizar last_log
+      await prisma.app_users.update({
+        where: { id: user.id },
+        data: { last_log: new Date() }
+      });
+
       // Generar tokens
       const tokenId = JWTUtils.generateTokenId();
       const accessToken = JWTUtils.generateAccessToken({
@@ -163,7 +172,9 @@ export class AuthController {
             id: user.id.toString(),
             email: user.email,
             full_name: user.full_name,
-            role: user.role
+            phone: user.phone,
+            role: user.role,
+            last_log: new Date()
           },
           tokens: {
             accessToken,
@@ -237,7 +248,9 @@ export class AuthController {
             id: user.id.toString(),
             email: user.email,
             full_name: user.full_name,
-            role: user.role
+            phone: user.phone,
+            role: user.role,
+            last_log: user.last_log
           }
         }
       });
@@ -299,7 +312,9 @@ export class AuthController {
             id: user.id.toString(),
             email: user.email,
             full_name: user.full_name,
+            phone: user.phone,
             role: user.role,
+            last_log: user.last_log,
             createdAt: user.created_at
           }
         }

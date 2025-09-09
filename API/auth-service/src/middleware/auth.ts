@@ -1,5 +1,10 @@
 import { Request, Response, NextFunction } from 'express';
 import { JWTUtils, JWTPayload } from '../utils/jwt';
+import { PrismaClient } from '@prisma/client';
+
+const prisma = new PrismaClient({
+  log: ['error']
+});
 
 
 declare global {
@@ -10,7 +15,7 @@ declare global {
   }
 }
 
-export const authenticateToken = (req: Request, res: Response, next: NextFunction): void => {
+export const authenticateToken = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   const authHeader = req.headers['authorization'];
   const token = authHeader && authHeader.split(' ')[1]; // Bearer TOKEN
 
@@ -25,6 +30,18 @@ export const authenticateToken = (req: Request, res: Response, next: NextFunctio
   try {
     const decoded = JWTUtils.verifyAccessToken(token);
     req.user = decoded;
+    
+    // Actualizar last_log del usuario automáticamente
+    try {
+      await prisma.app_users.update({
+        where: { id: BigInt(decoded.userId) },
+        data: { last_log: new Date() }
+      });
+    } catch (updateError) {
+      console.error('Error al actualizar last_log:', updateError);
+      // No interrumpir el flujo si falla la actualización del log
+    }
+    
     next();
   } catch (error) {
     console.error('Error al verificar token:', error);
